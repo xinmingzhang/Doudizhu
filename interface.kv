@@ -1,0 +1,76 @@
+<GamerInterface>:
+
+<LeftInterface>:
+
+<RightInterface>:
+
+
+<BidInterface>:
+    canvas:
+        Color:
+            rgba:0,0,0,0.3
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    Image:
+        id:_pass
+        source:'./img/pass1.png'
+        size_hint:0.15,0.15
+        pos_hint:{'center_x': 0.29, 'center_y': 0.35}
+        opacity: 0 if app.root.turn != 'player_a' else 1
+    Image:
+        id:stake_1
+        source:'./img/bid_1stake.png'
+        size_hint:0.15,0.15
+        pos_hint:{'center_x': 0.43, 'center_y': 0.35}
+        opacity: 0 if app.root.turn != 'player_a' else (1 if app.root.stake <1 else 0.5)
+    Image:
+        id:stake_2
+        source:'./img/bid_2stake.png'
+        size_hint:0.15,0.15
+        pos_hint:{'center_x': 0.57, 'center_y': 0.35}
+        opacity: 0 if app.root.turn != 'player_a' else (1 if app.root.stake <2 else 0.5)
+    Image:
+        id:stake_3
+        source:'./img/bid_3stake.png'
+        size_hint:0.15,0.15
+        pos_hint:{'center_x': 0.71, 'center_y': 0.35}
+        opacity: 0 if app.root.turn != 'player_a' else 1
+
+    Image:
+        id:player_c
+        source:'./img/peasant_symbol.png'
+        size_hint:0.15,0.15
+        pos_hint:{'center_x': 0.45, 'center_y': 0.58}
+    Image:
+        id:player_a
+        source:'./img/peasant_symbol.png'
+        size_hint:0.15,0.15
+        pos_hint:{'center_x': 0.5, 'center_y': 0.5}
+    Image:
+        id:player_b
+        source:'./img/peasant_symbol.png'
+        size_hint:0.15,0.15
+        pos_hint:{'center_x': 0.55, 'center_y': 0.58}
+
+    Image:
+        id:bid_1stake
+        allow_stretch:True
+        source:'./img/bid_1stake.png'
+        size_hint:0.5,0.5
+        pos_hint:{'center_x': 0.5, 'center_y': 0.55}
+        opacity:0
+    Image:
+        id:bid_2stake
+        allow_stretch:True
+        source:'./img/bid_2stake.png'
+        size_hint:0.5,0.5
+        pos_hint:{'center_x': 0.5, 'center_y': 0.55}
+        opacity:0
+    Image:
+        id:bid_3stake
+        allow_stretch:True
+        source:'./img/bid_3stake.png'
+        size_hint:0.5,0.5
+        pos_hint:{'center_x': 0.5, 'center_y': 0.55}
+        opacity:0
