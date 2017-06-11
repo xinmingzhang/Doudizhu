@@ -7,9 +7,10 @@ class Gamer(EventDispatcher):
     game = ObjectProperty()
     interface = ObjectProperty()
 
-    def __init__(self,game,**kwargs):
+    def __init__(self,game,name,**kwargs):
         super(Gamer,self).__init__(**kwargs)
         self.game = game
+        self.name = name
         self.interface = GamerInterface()
         self.bid_stake = -1
         self.role = 'peasant'
@@ -19,3 +20,7 @@ class Gamer(EventDispatcher):
         card.show_back = False
         self.interface.add_widget(card)
         self.interface.lay_cards()
+
+    def bid(self,value):
+        return [self.name,value]
+

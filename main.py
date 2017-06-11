@@ -14,7 +14,7 @@ from card import Card, deck
 
 from gamer import Gamer
 from ai import AI
-from interface import BidInterface
+from interface import BidInterface,Board
 
 DEALSOUND = SoundLoader.load('deal.ogg')
 
@@ -54,21 +54,24 @@ class Game(FloatLayout):
 
     state = OptionProperty('start', options=('start','deal', 'bid', 'play', 'over'))
     turn = OptionProperty('player_a',options=('player_a','player_b','player_c'))
-    bid_result = ListProperty([-1,-1,-1])
+    bid_message = ListProperty([None,None])
+
 
 
     def __init__(self, **kwargs):
         super(Game, self).__init__(**kwargs)
-        self.player_a = Gamer(self)
-        self.player_b = AI(self,'right')
-        self.player_c = AI(self,'left')
+        self.player_a = Gamer(self,'player_a')
+        self.player_b = AI(self,'player_b')
+        self.player_c = AI(self,'player_c')
+        self.players = ['player_a','player_b','player_c']
 
-        self.orders = cycle(['player_a','player_b','player_c'])
-        self.turn = next(self.orders)
+        self.bid_orders = cycle(['player_a','player_b','player_c'])
 
+        self.board = Board()
         self.add_widget(self.player_a.interface)
         self.add_widget(self.player_b.interface)
         self.add_widget(self.player_c.interface)
+        self.add_widget(self.board)
 
         self.state = 'deal'
 
@@ -78,31 +81,45 @@ class Game(FloatLayout):
 
     def on_state(self, *args):
         if self.state == 'deal':
+            self.player_a.interface.clear_widgets()
+            self.player_b.interface.clear_widgets()
+            self.player_c.interface.clear_widgets()
+            self.board.clear_widgets()
             self.deck = deck()
             for card in self.deck:
                 card.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
                 card.show_back = True
-                self.add_widget(card)
+                self.board.add_widget(card)
+
             self.deal_num = 0
             self.deal()
 
         elif self.state == 'bid':
-            self.landlord = None
+            self.bid_result = [-1, -1, -1]
             self.stake = max(self.bid_result)
             self.bid_interface = BidInterface(self)
             self.add_widget(self.bid_interface)
+            self.landlord = None
+
+            self.first_bid = next(self.bid_orders)
+            self.turn = self.first_bid
+
+
             if self.turn == 'player_a':
                 pass
             elif self.turn == 'player_b':
-                self.player_b.bid()
+
+                self.bid_message=self.player_b.bid()
             elif self.turn == 'player_c':
-                self.player_c.bid()
+                self.bid_message=self.player_c.bid()
 
         elif self.state == 'play':
             pass
 
+    def on_bid_message(self,instance,value):
+        self.bid_interface.animation(*value)
 
-    def on_bid_result(self,*args):
+    def check_bid_result(self,*args):
         self.stake = max(self.bid_result)
         if self.bid_result == [0,0,0]:
             self.remove_widget(self.bid_interface)
@@ -119,7 +136,10 @@ class Game(FloatLayout):
             self.player_c.role = 'landlord'
             self.remove_widget(self.bid_interface)
             self.player_c.interface.get_last3cards()
-
+        else:
+            i = self.players.index(self.turn)
+            i = (i+1)%3
+            self.turn = self.players[i]
 
 
 
@@ -152,26 +172,22 @@ class Game(FloatLayout):
             ani2.start(self.deck[1])
             ani3.start(self.deck[0])
             self.deal_num = 0
-            self.turn = 'player_a'
+
 
         else:
             pass
 
 
-
-
-
-
-
-
     def on_turn(self, *args):
+
         if self.state == 'bid':
             if self.turn == 'player_a':
                 pass
             elif self.turn == 'player_b':
-                self.player_b.bid()
+
+                self.bid_message = self.player_b.bid()
             elif self.turn == 'player_c':
-                self.player_c.bid()
+                self.bid_message = self.player_c.bid()
 
 
 class PlayerTableCards(FloatLayout):

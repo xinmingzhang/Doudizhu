@@ -11,14 +11,14 @@ class AI(EventDispatcher):
     interface = ObjectProperty()
     cards = ListProperty([])
 
-    def __init__(self,game,position,**kwargs):
+    def __init__(self,game,name,**kwargs):
         super(AI,self).__init__(**kwargs)
         self.game = game
         self.role = 'peasant'
-        self.position = position
-        if self.position == 'left':
+        self.name = name
+        if self.name == 'player_c':
             self.interface = LeftInterface()
-        elif self.position == 'right':
+        elif self.name == 'player_b':
             self.interface = RightInterface()
         self.bid_stake = -1
 
@@ -28,9 +28,9 @@ class AI(EventDispatcher):
         self.interface.lay_cards()
 
     def bid(self):
-        a = next(A)
+        a = 0
         if a > self.game.stake:
-            self.game.bid_interface.animation(self.game.turn,a)
+            return [self.name,a]
         else:
-            self.game.bid_interface.animation(self.game.turn,0)
+            return [self.name,0]
 
